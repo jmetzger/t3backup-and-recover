@@ -7,6 +7,7 @@ T3BACKUP_DBDIR="/var/t3backupdbs"
 # mysql path on server 
 MYSQL_DIR=/var/lib/mysql
 HELPER_FUNCTIONS="/usr/local/bin/t3backup/functions.sh"
+HELPER_SYNTAX="/usr/local/bin/t3backup/helpers/syntax.sh"
 
 # LOGS 
 LOG_DIR=/var/log/t3backup

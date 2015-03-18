@@ -59,20 +59,20 @@ fi
 
 if [ "$DEST_DB" == "" ]
 then
-  echo "You need to pass the DEST_PROJECT by -d or --destdb"
+  echo "You need to pass the DESTDB by -d or --destdb"
   ERROR=1
 fi
 
 if [ "$DUPLICITY_PASS_PHRASE" == "" ]
 then 
-  echo "You need to pass the DUPLICITY_PASS_PHRASE by -p or --duplicity_pass_phrase"
+  echo "You need to pass the DUPLICITY_PASS_PHRASE by -p or --duppass"
   ERROR=1  
 fi
 
 if [ "$ERROR" == 1 ]
 then
   echo "ERROR"
-  syntax 
+  syntax_db 
   exit 1
 fi
 
@@ -91,27 +91,24 @@ FULL_PATH="${SCP_BASE_DIR}${HOSTDIR}"
 
 # This way it will not appear in any logs
 export MYSQL_ROOT_PW
-
+export PASSPHRASE=$DUPLICITY_PASS_PHRASE
 CMD="duplicity restore --file-to-restore=${SRC_DB}.sql "$(getProtocol)"${SCP_USER}@${SCP_HOST}${FULL_PATH}${BACKUPDBDIR} ${DESTDBDIR}/${DEST_DB}.sql"
-echo $CMD
-exit;
-
-
+$CMD
 
 echo "RESULT of db-restore:(0 is good)->"$?
 
-if [ -f "${DESTDBDIR}/${DB}.sql" ]
+if [ -f "${DESTDBDIR}/${DEST_DB}.sql" ]
 then
   echo "-- Creating DB -- "
-  echo "CREATE DATABASE IF NOT EXISTS $DB" | mysql -uroot -p"$MYSQL_ROOT_PW"
+  echo "CREATE DATABASE IF NOT EXISTS $DEST_DB" | mysql -uroot -p"$MYSQL_ROOT_PW"
   echo "Result of Creation of Database:"$?
   
   echo "-- Importing DB --"
-  mysql -uroot -p"$MYSQL_ROOT_PW" $DB < $DESTDBDIR/${DB}".sql"
+  mysql -uroot -p"$MYSQL_ROOT_PW" $DEST_DB < $DESTDBDIR/${DEST_DB}".sql"
   echo "Result of Database Import:"$?
   echo "Database created and data imported"
 else
-  echo "Sorry. Database not found at $DESTDBDIR/$DB.sql.. Giving up"
+  echo "Sorry. Database not found at $DESTDBDIR/$DEST_DB.sql.. Giving up"
   exit 1
 fi
 
