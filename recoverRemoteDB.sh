@@ -39,6 +39,14 @@ case $i in
       DUPLICITY_PASS_PHRASE="${i#*=}"
       shift
     ;;
+    -t=*|--backuptime=*)
+      BACKUP_TIME="${i#*=}"
+    ;;
+    -h|--help)
+      syntax_db
+      exit 0
+    ;;
+    
     *)
     # unknown option
     ;;
@@ -86,13 +94,23 @@ echo "SRC_DIR_ABS:           ${BACKUPDIR}"
 echo "DEST_DIR_ABS:          ${DESTDIR}"
 echo "DUPLICITY_PASS_PHRASE: xxxxxxxx"
 
+# Set Backuptime (so something in the past
+if [ "$BACKUP_TIME" != "" ]
+then
+   USE_BACKUP_TIME=" -t $BACKUP_TIME" 
+   echo "BACKUP_TIME:          ${BACKUP_TIME}"
+else
+   USE_BACKUP_TIME=""
+fi 
+
 #
 FULL_PATH="${SCP_BASE_DIR}${HOSTDIR}"
 
 # This way it will not appear in any logs
 export MYSQL_ROOT_PW
 export PASSPHRASE=$DUPLICITY_PASS_PHRASE
-CMD="duplicity restore --file-to-restore=${SRC_DB}.sql "$(getProtocol)"${SCP_USER}@${SCP_HOST}${FULL_PATH}${BACKUPDBDIR} ${DESTDBDIR}/${DEST_DB}.sql"
+CMD="duplicity restore --file-to-restore=${SRC_DB}.sql ${USE_BACKUP_TIME} "$(getProtocol)"${SCP_USER}@${SCP_HOST}${FULL_PATH}${BACKUPDBDIR} ${DESTDBDIR}/${DEST_DB}.sql"
+echo $CMD
 $CMD
 
 echo "RESULT of db-restore:(0 is good)->"$?

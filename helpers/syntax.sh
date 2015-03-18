@@ -7,7 +7,7 @@ function syntax {
 
 function syntax_db {
 
-   echo "Syntax:  "'./recoverRemoteDB.sh -h=|--host= -s=|--srcdb= -d=|--destdb= -p=|--duppass='
-   echo "Example: "'./recoverRemoteDB.sh -h=example.domain.com -s=dbname -d=dbname -p=fkq23rjqralfkadkfadkfaka3kfkl23'
+   echo "Syntax:  "'./recoverRemoteDB.sh -h=|--host= -s=|--srcdb= -d=|--destdb= -p=|--duppass= [-t=|--backuptime]'
+   echo "Example: "'./recoverRemoteDB.sh -h=example.domain.com -s=dbname -d=dbname -p=fkq23rjqralfkadkfadkfaka3kfkl23 -t=12D'
 
 }
